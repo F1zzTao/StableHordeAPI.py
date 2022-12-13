@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "StableHordeAPI.py"
+version = "0.1.0"
+description = "Library for using Stable Horde API in Python"
+authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/timius100/StableHordeAPI.py"
+keywords = ["stablehorde", "async", "asyncio"]
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiofiles = "^22.1.0"
+aiohttp = "^3.8.3"
+msgspec = "^0.10.1"
+loguru = "^0.6.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
