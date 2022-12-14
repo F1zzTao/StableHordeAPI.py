@@ -6,6 +6,9 @@ authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/timius100/StableHordeAPI.py"
+packages = [
+  { include = "stablehorde_api"}
+]
 keywords = ["stablehorde", "async", "asyncio"]
 classifiers = [
   "Environment :: Console",
