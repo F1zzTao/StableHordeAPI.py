@@ -2,21 +2,41 @@ from typing import Optional, Sequence
 
 import msgspec
 
+class ModelPayloadLorasStable(msgspec.Struct):
+    name: str # The exact name or CivitAI ID of the LoRa.
+    model: int | None = None # The strength of the LoRa to apply to the SD model.
+    clip: int | None = None # The strength of the LoRa to apply to the clip model.
+
+    # If set, will try to discover a trigger for this LoRa which matches or
+    # is similar to this string and inject it into the prompt.
+    # If 'any' is specified it will be pick the first trigger.
+    inject_trigger: str | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
 
 class ModelGenerationInputStable(msgspec.Struct):
-    sampler_name: str | None = None
-    cfg_scale: float | None = None
+    sampler_name: str | None = "k_euler_a"
+    cfg_scale: float | None = 7
     denoising_strength: float | None = None
-    height: int | None = None
-    weight: int | None = None
+    height: int | None = 512
+    weight: int | None = 512
     seed_variation: int | None = None
     post_processing: Sequence[str] | None = None
     karras: bool | None = None
-    steps: int | None = None
+    steps: int | None = 15
+    loras: Sequence[ModelPayloadLorasStable] | None = None
     n: int | None = None
 
     def to_dict(self):
-        return {f: getattr(self, f) for f in self.__struct_fields__}
+        resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+        if "loras" in resp:
+            loras = []
+            for lora in self.loras:
+                loras.append(lora.to_dict())
+            resp["loras"] = loras
+        return resp
 
 
 class GenerationInput(msgspec.Struct):
@@ -33,11 +53,15 @@ class GenerationInput(msgspec.Struct):
     r2: bool | None = None
 
     def to_dict(self):
-        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+        resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+        if "params" in resp:
+            resp["params"] = self.params.to_dict()
+        return resp
 
 
-class RequestAsync(msgspec.Struct):
+class GenerationQueued(msgspec.Struct):
     id: str
+    kudos: int | float
     message: Optional[str] = None
 
 
@@ -74,3 +98,39 @@ class RequestStatusStable(msgspec.Struct):
     kudos: float
     is_possible: bool
     generations: list[GenerationStable]
+
+
+class ValidationErrorDescription(msgspec.Struct):
+    message: str
+    errors: dict
+
+
+class InvalidAPIKeyDescription(msgspec.Struct):
+    message: str
+
+
+class TooManyPromptsDescription(msgspec.Struct):
+    message: str
+
+
+class MantenanceModeDescription(msgspec.Struct):
+    message: str
+
+
+class ActiveModelsRequest(msgspec.Struct):
+    type: str | None = "image"
+    min_count: int | None = None
+    max_count: int | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
+
+class ActiveModel(msgspec.Struct):
+    name: str
+    count: int
+    performance: int | float
+    queued: int | float
+    jobs: int | float
+    eta: int
+    type: str

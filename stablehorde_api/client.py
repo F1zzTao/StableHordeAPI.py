@@ -2,6 +2,7 @@ import asyncio
 import base64
 import time
 from typing import Optional
+import json
 
 import aiofiles
 import aiohttp
@@ -36,9 +37,24 @@ class StableHordeAPI:
         )
         return response
 
+    async def get_models(
+        self, payload: models.ActiveModelsRequest | dict, 
+    ) -> list:
+        if not isinstance(payload, dict):
+            payload = payload.to_dict()
+
+        response = await self._request(
+            self.api+'/status/models', "GET", payload, {'apikey': self.api_key}
+        )
+
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=list[models.ActiveModel]
+        )
+
     async def txt2img_request(
         self, payload: models.GenerationInput | dict
-    ) -> models.RequestAsync | dict:
+    ) -> models.GenerationQueued | dict:
         """Create an asynchronous request to generate images"""
         if not isinstance(payload, dict):
             payload = payload.to_dict()
@@ -46,10 +62,37 @@ class StableHordeAPI:
         response = await self._request(
             self.api+'/generate/async', "POST", payload, {'apikey': self.api_key}
         )
-        return msgspec.json.decode(
-            (await response.content.read()),
-            type=models.RequestAsync
-        )
+        if response.status == 202:
+            return msgspec.json.decode(
+                (await response.content.read()),
+                type=models.GenerationQueued
+            )
+        elif response.status == 400:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.ValidationErrorDescription
+            )
+            raise errors.ValidationError(description.message + "\nErrors:\n" + str(description.errors))
+        elif response.status == 401:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.InvalidAPIKeyDescription
+            )
+            raise errors.InvalidAPIKey(description.message)
+        elif response.status == 429:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.TooManyPromptsDescription
+            )
+            raise errors.TooManyPrompts(description.message)
+        elif response.status == 503:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.MaintenanceModeDescription
+            )
+            raise errors.MaintenanceMode(description.message)
+        else:
+            raise ValueError("Invalid status code: " + str(response.status))
 
     async def generate_from_txt(
         self,
@@ -64,11 +107,11 @@ class StableHordeAPI:
         image_gen = await self.txt2img_request(payload)
         finished = False
         while not finished:
-            # Check if image is generated every second
-            await asyncio.sleep(1)
             img_check = await self.generate_check(image_gen.id)
             if img_check.done == 1:
                 finished = True
+            else:
+                await asyncio.sleep(img_check.wait_time)
 
         # Request a status of the generation with images
         img_status = await self.generate_status(image_gen.id)
