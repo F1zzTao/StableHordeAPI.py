@@ -17,15 +17,15 @@ class ModelPayloadLorasStable(msgspec.Struct):
 
 
 class ModelGenerationInputStable(msgspec.Struct):
-    sampler_name: str | None = "k_euler_a"
-    cfg_scale: float | None = 7
+    sampler_name: str | None = Nobe
+    cfg_scale: float | None = None
     denoising_strength: float | None = None
-    height: int | None = 512
-    weight: int | None = 512
+    height: int | None = None
+    width: int | None = None
     seed_variation: int | None = None
     post_processing: Sequence[str] | None = None
     karras: bool | None = None
-    steps: int | None = 15
+    steps: int | None = None
     loras: Sequence[ModelPayloadLorasStable] | None = None
     n: int | None = None
 
