@@ -17,7 +17,7 @@ class ModelPayloadLorasStable(msgspec.Struct):
 
 
 class ModelGenerationInputStable(msgspec.Struct):
-    sampler_name: str | None = Nobe
+    sampler_name: str | None = None
     cfg_scale: float | None = None
     denoising_strength: float | None = None
     height: int | None = None
