@@ -46,6 +46,7 @@ class GenerationInput(msgspec.Struct):
     trusted_workers: bool | None = None
     censor_nsfw: bool | None = None
     workers: Sequence[str] | None = None
+    slow_workers: bool | None = None
     models: Sequence[str] | None = None
     source_image: str | None = None
     source_processing: str | None = None
