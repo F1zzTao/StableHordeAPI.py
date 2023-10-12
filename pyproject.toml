@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "StableHordeAPI.py"
-version = "0.1.1"
+version = "0.1.2"
 description = "Library for using Stable Horde API in Python"
 authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>"]
 license = "MIT"
@@ -24,7 +24,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-aiofiles = "^22.1.0"
+aiofiles = "^23.1.0"
 aiohttp = "^3.8.3"
 msgspec = "^0.10.1"
 loguru = "^0.6.0"
