@@ -2,7 +2,7 @@
 
 [[package]]
 name = "aiofiles"
-version = "22.1.0"
+version = "23.1.0"
 description = "File support for asyncio."
 category = "main"
 optional = false
