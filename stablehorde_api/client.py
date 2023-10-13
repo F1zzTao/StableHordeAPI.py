@@ -39,7 +39,7 @@ class StableHordeAPI:
 
     async def get_models(
         self, payload: models.ActiveModelsRequest | dict, 
-    ) -> list:
+    ) -> list[models.ActiveModel]:
         if not isinstance(payload, dict):
             payload = payload.to_dict()
 
@@ -50,6 +50,17 @@ class StableHordeAPI:
         return msgspec.json.decode(
             (await response.content.read()),
             type=list[models.ActiveModel]
+        )
+
+    async def find_user(
+            self, api_key: str = self.api_key
+    ) -> models.UserInfoResponse:
+        response = await self._request(
+            self.api+"/find_user", "GET", None, {"apikey": api_key}
+        )
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=models.FindUserResponse
         )
 
     async def txt2img_request(

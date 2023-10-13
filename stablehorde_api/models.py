@@ -39,6 +39,28 @@ class ModelGenerationInputStable(msgspec.Struct):
         return resp
 
 
+class FindUserResponse(msgspec.Struct):
+    username: str | None = None
+    id: int | None = None
+    kudos: int | None = None
+    concurrency: int | None = None
+    worker_invited: int | None = None
+    moderator: bool | None = None
+    kudos_details: UserKudosDetails | None = None
+    worker_count: int | None = None
+    worker_ids: list | None = None
+    sharedkey_ids: list | None = None
+    trusted: bool | None = None
+    flagged: bool | None = None
+    vpn: bool | None = None
+    special: bool | None = None
+    pseudonymous: bool | None = None
+    account_age: int | None = None
+
+
+class UserKudosDetails(msgspec.Struct): pass # TODO
+
+
 class GenerationInput(msgspec.Struct):
     prompt: str
     params: ModelGenerationInputStable | None = None
