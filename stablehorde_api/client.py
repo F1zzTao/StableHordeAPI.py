@@ -53,8 +53,10 @@ class StableHordeAPI:
         )
 
     async def find_user(
-            self, api_key: str = self.api_key
+            self, api_key: str | None = None
     ) -> models.UserInfoResponse:
+        if api_key is None:
+            api_key = self.api_key
         response = await self._request(
             self.api+"/find_user", "GET", None, {"apikey": api_key}
         )
