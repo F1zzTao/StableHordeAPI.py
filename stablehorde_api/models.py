@@ -46,7 +46,7 @@ class FindUserResponse(msgspec.Struct):
     concurrency: int | None = None
     worker_invited: int | None = None
     moderator: bool | None = None
-    kudos_details: UserKudosDetails | None = None
+    kudos_details: dict | None = None
     worker_count: int | None = None
     worker_ids: list | None = None
     sharedkey_ids: list | None = None
@@ -56,9 +56,6 @@ class FindUserResponse(msgspec.Struct):
     special: bool | None = None
     pseudonymous: bool | None = None
     account_age: int | None = None
-
-
-class UserKudosDetails(msgspec.Struct): pass # TODO
 
 
 class GenerationInput(msgspec.Struct):
