@@ -23,7 +23,7 @@ class ModelGenerationInputStable(msgspec.Struct):
     height: int | None = None
     width: int | None = None
     seed_variation: int | None = None
-    post_processing: Sequence[str] | None = None
+    post_processing: Sequence[str] | None = ["GFPGAN"]
     karras: bool | None = None
     steps: int | None = None
     loras: Sequence[ModelPayloadLorasStable] | None = None
@@ -52,6 +52,7 @@ class GenerationInput(msgspec.Struct):
     source_mask: str | None = None
     r2: bool | None = None
     slow_workers: bool | None = None
+    shared: bool | None = True
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
