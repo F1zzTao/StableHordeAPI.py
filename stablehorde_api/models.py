@@ -40,9 +40,9 @@ class ModelGenerationInputStable(msgspec.Struct):
 
 
 class FindUserResponse(msgspec.Struct):
-    username: str | None = None
+    username: str = None
     id: int | None = None
-    kudos: int | None = None
+    kudos: int | float | None = None
     concurrency: int | None = None
     worker_invited: int | None = None
     moderator: bool | None = None
