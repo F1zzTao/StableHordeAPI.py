@@ -16,6 +16,15 @@ class ModelPayloadLorasStable(msgspec.Struct):
         return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
 
 
+class ModelPayloadTextualInversionsStable(msgspec.Struct):
+    name: str
+    inject_ti: str = "prompt" # prompt/negprompt
+    strength: int | float | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
+
 class ModelGenerationInputStable(msgspec.Struct):
     sampler_name: str | None = None
     cfg_scale: float | None = None
@@ -30,6 +39,7 @@ class ModelGenerationInputStable(msgspec.Struct):
     n: int | None = None
     clip_skip: int | None = 2
     hires_fix: bool | None = None
+    tis: Sequence[ModelPayloadTextualInversionsStable] | None = None
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
@@ -38,6 +48,11 @@ class ModelGenerationInputStable(msgspec.Struct):
             for lora in self.loras:
                 loras.append(lora.to_dict())
             resp["loras"] = loras
+        if "tis" is resp:
+            tis = []
+            for ti in self.tis:
+                tis.append(ti.to_dict())
+            resp["tis"] = tis
         return resp
 
 
