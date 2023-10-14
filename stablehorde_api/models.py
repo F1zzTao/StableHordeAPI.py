@@ -1,4 +1,5 @@
 from typing import Optional, Sequence
+import logging
 
 import msgspec
 
@@ -53,6 +54,7 @@ class ModelGenerationInputStable(msgspec.Struct):
             for ti in self.tis:
                 tis.append(ti.to_dict())
             resp["tis"] = tis
+        logging.info(resp)
         return resp
 
 
