@@ -28,6 +28,8 @@ class ModelGenerationInputStable(msgspec.Struct):
     steps: int | None = None
     loras: Sequence[ModelPayloadLorasStable] | None = None
     n: int | None = None
+    clip_skip: int | None = 2
+    hires_fix: bool | None = None
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
