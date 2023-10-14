@@ -49,12 +49,11 @@ class ModelGenerationInputStable(msgspec.Struct):
             for lora in self.loras:
                 loras.append(lora.to_dict())
             resp["loras"] = loras
-        if "tis" is resp:
+        if "tis" in resp:
             tis = []
             for ti in self.tis:
                 tis.append(ti.to_dict())
             resp["tis"] = tis
-        logging.info(resp)
         return resp
 
 
