@@ -117,7 +117,7 @@ class StableHordeAPI:
         webp_image.save(webp_bytes, "WEBP")
         jpg_image.close()
         webp_base64 = base64.b64encode(webp_bytes.getvalue())
-        return webp_base64
+        return webp_base64.decode()
 
     async def generate_from_txt(
         self,
