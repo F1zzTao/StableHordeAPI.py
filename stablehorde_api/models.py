@@ -143,7 +143,7 @@ class RequestStatusStable(msgspec.Struct):
 
 class ValidationErrorDescription(msgspec.Struct):
     message: str
-    errors: dict
+    errors: dict | None = {}
 
 
 class InvalidAPIKeyDescription(msgspec.Struct):
