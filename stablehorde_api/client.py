@@ -113,7 +113,7 @@ class StableHordeAPI:
     async def convert_image(self, jpg_path):
         jpg_image = Image.open(jpg_path)
         webp_image = jpg_image.convert("RGB")
-        webp_bytes = io.BytesIO()
+        webp_bytes = BytesIO()
         webp_image.save(webp_bytes, "WEBP")
         jpg_image.close()
         webp_base64 = base64.b64encode(webp_bytes.getvalue())
