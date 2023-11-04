@@ -86,7 +86,7 @@ class GenerationInput(msgspec.Struct):
     censor_nsfw: bool | None = None
     workers: Sequence[str] | None = None
     models: Sequence[str] | None = None
-    source_image: str | None = None
+    source_image: str | bytes | None = None
     source_processing: str | None = None
     source_mask: str | None = None
     r2: bool | None = None
