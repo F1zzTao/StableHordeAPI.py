@@ -112,7 +112,7 @@ class StableHordeAPI:
 
     async def convert_image(self, jpg_path):
         jpg_image = Image.open(jpg_path)
-        webp_image = jpg_image.convert("RGB")
+        webp_image = jpg_image.convert("RGBA")
         webp_bytes = BytesIO()
         webp_image.save(webp_bytes, "WEBP", lossless=True)
         jpg_image.close()
