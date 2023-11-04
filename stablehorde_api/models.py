@@ -92,6 +92,7 @@ class GenerationInput(msgspec.Struct):
     r2: bool | None = None
     slow_workers: bool | None = None
     shared: bool | None = True
+    replacement_filter: bool | None = False
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
