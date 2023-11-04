@@ -41,6 +41,8 @@ class ModelGenerationInputStable(msgspec.Struct):
     clip_skip: int | None = 2
     hires_fix: bool | None = None
     tis: Sequence[ModelPayloadTextualInversionsStable] | None = None
+    control_type: str | None = None
+    image_is_control: bool | None = None
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}

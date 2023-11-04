@@ -3,11 +3,14 @@ import base64
 import time
 from typing import Optional
 import json
+from io import BytesIO
+import base64
 
 import aiofiles
 import aiohttp
 import msgspec
 from loguru import logger
+from PIL import Image
 
 from . import errors, models
 
@@ -106,6 +109,15 @@ class StableHordeAPI:
             raise errors.MaintenanceMode(description.message)
         else:
             raise ValueError("Invalid status code: " + str(response.status))
+
+    async def convert_image(self, jpg_path):
+        jpg_image = Image.open(jpg_path)
+        webp_image = jpg_image.convert("RGB")
+        webp_bytes = io.BytesIO()
+        webp_image.save(webp_bytes, "WEBP")
+        jpg_image.close()
+        webp_base64 = base64.b64encode(webp_bytes.getvalue())
+        return webp_base64
 
     async def generate_from_txt(
         self,
