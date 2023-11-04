@@ -114,7 +114,7 @@ class StableHordeAPI:
         jpg_image = Image.open(jpg_path)
         webp_image = jpg_image.convert("RGB")
         webp_bytes = BytesIO()
-        webp_image.save(webp_bytes, "WEBP")
+        webp_image.save(webp_bytes, "WEBP", lossless=True)
         jpg_image.close()
         webp_base64 = base64.b64encode(webp_bytes.getvalue())
         return webp_base64.decode()
