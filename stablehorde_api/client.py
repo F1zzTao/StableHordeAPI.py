@@ -89,6 +89,9 @@ class StableHordeAPI:
                 type=models.ValidationErrorDescription
             )
             raise errors.ValidationError(description.message + "\nErrors:\n" + str(description.errors))
+        elif response.status == 403:
+            description = await response.content.read()
+            raise errors.Forbidden(description)
         elif response.status == 401:
             description = msgspec.json.decode(
                 (await response.content.read()),
