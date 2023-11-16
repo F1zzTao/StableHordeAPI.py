@@ -128,6 +128,7 @@ class GenerationStable(msgspec.Struct):
     model: str
     img: str
     seed: str
+    gen_metadata: dict | list | None = Noner
 
 
 class RequestStatusStable(msgspec.Struct):
@@ -142,7 +143,6 @@ class RequestStatusStable(msgspec.Struct):
     kudos: float
     is_possible: bool
     generations: list[GenerationStable]
-    gen_metadata: dict | list | None = None
 
 
 class ValidationErrorDescription(msgspec.Struct):
