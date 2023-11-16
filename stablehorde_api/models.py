@@ -128,7 +128,7 @@ class GenerationStable(msgspec.Struct):
     model: str
     img: str
     seed: str
-    gen_metadata: dict | list | None = Noner
+    gen_metadata: dict | list | None = None
 
 
 class RequestStatusStable(msgspec.Struct):
