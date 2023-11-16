@@ -44,6 +44,7 @@ class ModelGenerationInputStable(msgspec.Struct):
     control_type: str | None = None
     image_is_control: bool | None = None
     return_control_map: bool | None = None
+    seed: int | str | None = None
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
