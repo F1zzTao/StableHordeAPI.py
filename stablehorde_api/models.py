@@ -142,6 +142,7 @@ class RequestStatusStable(msgspec.Struct):
     kudos: float
     is_possible: bool
     generations: list[GenerationStable]
+    gen_metadata: dict | list | None = None
 
 
 class ValidationErrorDescription(msgspec.Struct):
