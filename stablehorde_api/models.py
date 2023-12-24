@@ -8,7 +8,7 @@ class ModelGenerationInputStable(msgspec.Struct):
     cfg_scale: float | None = None
     denoising_strength: float | None = None
     height: int | None = None
-    weight: int | None = None
+    width: int | None = None
     seed_variation: int | None = None
     post_processing: Sequence[str] | None = None
     karras: bool | None = None
