@@ -6,12 +6,13 @@ import msgspec
 class ModelPayloadLorasStable(msgspec.Struct):
     name: str # The exact name or CivitAI ID of the LoRa.
     model: int | None = None # The strength of the LoRa to apply to the SD model.
-    clip: int | None = None # The strength of the LoRa to apply to the clip model.
+    clip: int | None = 1 # The strength of the LoRa to apply to the clip model.
 
     # If set, will try to discover a trigger for this LoRa which matches or
     # is similar to this string and inject it into the prompt.
     # If 'any' is specified it will be pick the first trigger.
     inject_trigger: str | None = None
+    is_version: bool | None = False
 
     def to_dict(self):
         return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
