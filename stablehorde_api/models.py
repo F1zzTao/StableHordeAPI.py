@@ -49,16 +49,6 @@ class ModelGenerationInputStable(msgspec.Struct):
 
     def to_dict(self):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
-        if "loras" in resp:
-            loras = []
-            for lora in self.loras:
-                loras.append(lora.to_dict())
-            resp["loras"] = loras
-        if "tis" in resp:
-            tis = []
-            for ti in self.tis:
-                tis.append(ti.to_dict())
-            resp["tis"] = tis
         return resp
 
 
