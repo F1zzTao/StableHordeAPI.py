@@ -109,7 +109,7 @@ class StableHordeAPI:
                 if (payload.params.height is not None) and (payload.params.width is not None):
                     if worker.max_pixels < payload.params.height * payload.params.width:
                         continue
-                if (payload.params.lora is not None) or (payload.params.tis is not None):
+                if (payload.params.loras is not None) or (payload.params.tis is not None):
                     if not worker.lora:
                         continue
             if payload.source_image is not None:
