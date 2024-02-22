@@ -82,7 +82,7 @@ class StableHordeAPI:
     ) -> models.GenerationQueued | dict:
         """Create an asynchronous request to generate images"""
 
-        worker_list = await get_workers()
+        worker_list = await self.get_workers()
         workers = []
         for worker in worker_list:
             if len(workers) == 5:
