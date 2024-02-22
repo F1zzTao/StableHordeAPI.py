@@ -118,9 +118,6 @@ class StableHordeAPI:
                 if (payload.source_processing is not None) and (not payload.source_processing == "img2img"):
                     if not worker.painting:
                         continue
-            if payload.post_processing is not None: # TODO
-                if not worker.post_processing:      # TODO
-                    continue                        # TODO
             workers.append(worker.id)
         
         if workers == []:

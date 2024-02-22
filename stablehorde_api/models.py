@@ -95,7 +95,7 @@ class WorkerDetails(msgspec.Struct):
     megapixelsteps_generated: int | float | None = None
     img2img: bool | None = None
     painting: bool | None = None
-    post_processing: bool | None = msgspec.field(bool | None, alias="post-processing")
+    post_processing: bool | None = None
     lora: bool | None = None
     max_length: int | None = None
     max_context_length: int | None = None
