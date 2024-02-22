@@ -88,7 +88,7 @@ class WorkerDetails(msgspec.Struct):
     uncompleted_jobs: int | None = None
     models: Sequence[str] | None = None
     forms: Sequence[str] | None = None
-    team: TemaDetailsLite | None = None
+    team: TeamDetailsLite | None = None
     contact: str | None = None
     bridge_agent: str
     max_pixels: int | None = None
