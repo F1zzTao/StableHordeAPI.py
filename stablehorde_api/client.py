@@ -85,7 +85,7 @@ class StableHordeAPI:
         worker_list = await get_workers()
         workers = []
         for worker in worker_list:
-            if len(workers) = 5:
+            if len(workers) == 5:
                 break
             if worker.flagged:
                 continue
@@ -123,7 +123,7 @@ class StableHordeAPI:
                     continue                        # TODO
             workers.append(worker.id)
         
-        if workers = []:
+        if workers == []:
             raise errors.AvailableWorkersNotFound()
         payload.workers = workers
 
