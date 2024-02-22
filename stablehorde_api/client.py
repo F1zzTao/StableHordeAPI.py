@@ -120,6 +120,11 @@ class StableHordeAPI:
                         continue
             workers.append(worker.id)
         
+        # Max priority for "The Portal of Infinite Realities"
+        if "dc0704ab-5b42-4c65-8471-561be16ad696" in workers:
+            workers.remove("dc0704ab-5b42-4c65-8471-561be16ad696")
+            workers.insert(0, "dc0704ab-5b42-4c65-8471-561be16ad696")
+        
         if workers == []:
             raise errors.AvailableWorkersNotFound()
         payload.workers = workers
