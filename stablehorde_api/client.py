@@ -68,10 +68,65 @@ class StableHordeAPI:
             type=models.FindUserResponse
         )
 
+    async def get_workers(self) -> list[models.WorkerDetails]:
+        response = await self._request(
+            self.api+"/workers", "GET", None, {"apikey": self.api_key}
+        )
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=list[models.WorkerDetails]
+        )
+
     async def txt2img_request(
         self, payload: models.GenerationInput | dict
     ) -> models.GenerationQueued | dict:
         """Create an asynchronous request to generate images"""
+
+        worker_list = await get_workers()
+        workers = []
+        for worker in worker_list:
+            if len(workers) = 5:
+                break
+            if worker.flagged:
+                continue
+            if not worker.online:
+                continue
+            if payload.nsfw is not None:
+                if not payload.nsfw == worker.nsfw:
+                    continue
+            if payload.trusted_workers == True:
+                if not worker.trusted:
+                    continue
+            if payload.models is not None:
+                ok = False
+                for model in payload.models:
+                    if model in worker.models:
+                        ok = True
+                        break
+                if not ok:
+                    continue
+            if payload.params is not None:
+                if (payload.params.height is not None) and (payload.params.width is not None):
+                    if worker.max_pixels < payload.params.height * payload.params.width:
+                        continue
+                if (payload.params.lora is not None) or (payload.params.tis is not None):
+                    if not worker.lora:
+                        continue
+            if payload.source_image is not None:
+                if not worker.img2img:
+                    continue
+                if (payload.source_processing is not None) and (not payload.source_processing == "img2img"):
+                    if not worker.painting:
+                        continue
+            if payload.post_processing is not None: # TODO
+                if not worker.post_processing:      # TODO
+                    continue                        # TODO
+            workers.append(worker.id)
+        
+        if workers = []:
+            raise errors.AvailableWorkersNotFound()
+        payload.workers = workers
+
         if not isinstance(payload, dict):
             payload = payload.to_dict()
 

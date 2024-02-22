@@ -34,7 +34,7 @@ class ModelGenerationInputStable(msgspec.Struct):
     height: int | None = None
     width: int | None = None
     seed_variation: int | None = None
-    post_processing: Sequence[str] | None = ["GFPGAN"]
+    post_processing: Sequence[str] | None = None
     karras: bool | None = None
     steps: int | None = None
     loras: Sequence[ModelPayloadLorasStable] | None = None
@@ -51,6 +51,58 @@ class ModelGenerationInputStable(msgspec.Struct):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
         return resp
 
+class WorkerDetails(msgspec.Struct):
+    type: str = "image"
+    name: Optional[str] = None
+    id: str | None = None
+    online: bool = False
+    requests_fulfilled: int | None = None
+    kudos_rewards: int | float | None = None
+    kudos_details: WorkerKudosDetails | None = None
+    performance: str | None = None
+    threads: int | None = None
+    uptime: int | None = None
+    paused: bool | None = None
+    maintenance_mode: bool | None = None
+    info: str | None = None
+    nsfw: Optional[bool] = False
+    owner: str | None = None
+    ipaddr: str | None = None
+    trusted: bool | None = None
+    flagged: bool | None = None
+    suspicious: int | None = None
+    uncompleted_jobs: int | None = None
+    models: Sequence[str] | None = None
+    forms: Sequence[str] | None = None
+    team: TemaDetailsLite | None = None
+    contact: str | None = None
+    bridge_agent: str
+    max_pixels: int | None = None
+    megapixelsteps_generated: int | float | None = None
+    img2img: bool | None = None
+    painting: bool | None = None
+    post_processing: bool | None = msgspec.field(bool | None, alias="post-processing")
+    lora: bool | None = None
+    max_length: int | None = None
+    max_context_length: int | None = None
+    tokens_generated: int | float | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
+class TeamDetailsLite(msgspec.Struct):
+    name: str | None = None
+    id: str | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
+class WorkerKudosDetails(msgspec.Struct):
+    generated: int | float | None = None
+    uptime: int | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
 
 class FindUserResponse(msgspec.Struct):
     username: str = None
@@ -69,6 +121,9 @@ class FindUserResponse(msgspec.Struct):
     special: bool | None = None
     pseudonymous: bool | None = None
     account_age: int | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
 
 
 class GenerationInput(msgspec.Struct):

@@ -12,3 +12,6 @@ class TooManyPrompts(BaseException):
 
 class MaintenanceMode(BaseException):
     pass
+
+class AvailableWorkerNotFound(BaseException):
+    pass

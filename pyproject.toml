@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "StableHordeAPI.py"
-version = "0.1.8"
+version = "0.1.9"
 description = "Library for using Stable Horde API in Python"
 authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>", "Nikita Ugnich <nikitagavrilin005@gmail.com>"]
 license = "MIT"
