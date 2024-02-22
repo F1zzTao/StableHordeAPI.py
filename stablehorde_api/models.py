@@ -51,6 +51,20 @@ class ModelGenerationInputStable(msgspec.Struct):
         resp = {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
         return resp
 
+class TeamDetailsLite(msgspec.Struct):
+    name: str | None = None
+    id: str | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
+class WorkerKudosDetails(msgspec.Struct):
+    generated: int | float | None = None
+    uptime: int | None = None
+
+    def to_dict(self):
+        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
+
 class WorkerDetails(msgspec.Struct):
     type: str = "image"
     name: Optional[str] = None
@@ -86,20 +100,6 @@ class WorkerDetails(msgspec.Struct):
     max_length: int | None = None
     max_context_length: int | None = None
     tokens_generated: int | float | None = None
-
-    def to_dict(self):
-        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
-
-class TeamDetailsLite(msgspec.Struct):
-    name: str | None = None
-    id: str | None = None
-
-    def to_dict(self):
-        return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
-
-class WorkerKudosDetails(msgspec.Struct):
-    generated: int | float | None = None
-    uptime: int | None = None
 
     def to_dict(self):
         return {f: getattr(self, f) for f in self.__struct_fields__ if getattr(self, f) is not None}
