@@ -120,7 +120,7 @@ class StableHordeAPI:
                         continue
             workers.append(worker.id)
         
-        workers = ["dc0704ab-5b42-4c65-8471-561be16ad696"]
+        # workers = ["dc0704ab-5b42-4c65-8471-561be16ad696"]
         
         if workers == []:
             raise errors.AvailableWorkersNotFound()
