@@ -2,11 +2,15 @@ import asyncio
 import base64
 import time
 from typing import Optional
+import json
+from io import BytesIO
+import base64
 
 import aiofiles
 import aiohttp
 import msgspec
 from loguru import logger
+from PIL import Image
 
 from . import errors, models
 
@@ -36,20 +40,141 @@ class StableHordeAPI:
         )
         return response
 
+    async def get_models(
+        self, payload: models.ActiveModelsRequest | dict, 
+    ) -> list[models.ActiveModel]:
+        if not isinstance(payload, dict):
+            payload = payload.to_dict()
+
+        response = await self._request(
+            self.api+'/status/models', "GET", payload, {'apikey': self.api_key}
+        )
+
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=list[models.ActiveModel]
+        )
+
+    async def find_user(
+            self, api_key: str | None = None
+    ) -> models.FindUserResponse:
+        if api_key is None:
+            api_key = self.api_key
+        response = await self._request(
+            self.api+"/find_user", "GET", None, {"apikey": api_key}
+        )
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=models.FindUserResponse
+        )
+
+    async def get_workers(self) -> list[models.WorkerDetails]:
+        response = await self._request(
+            self.api+"/workers", "GET", None, {"apikey": self.api_key}
+        )
+        return msgspec.json.decode(
+            (await response.content.read()),
+            type=list[models.WorkerDetails]
+        )
+
     async def txt2img_request(
         self, payload: models.GenerationInput | dict
-    ) -> models.RequestAsync | dict:
+    ) -> models.GenerationQueued | dict:
         """Create an asynchronous request to generate images"""
+
+        worker_list = await self.get_workers()
+        workers = []
+        for worker in worker_list:
+            if len(workers) == 5:
+                break
+            if worker.flagged:
+                continue
+            if not worker.online:
+                continue
+            if payload.nsfw is not None:
+                if not payload.nsfw == worker.nsfw:
+                    continue
+            if payload.trusted_workers == True:
+                if not worker.trusted:
+                    continue
+            if payload.models is not None:
+                ok = False
+                for model in payload.models:
+                    if model in worker.models:
+                        ok = True
+                        break
+                if not ok:
+                    continue
+            if payload.params is not None:
+                if (payload.params.height is not None) and (payload.params.width is not None):
+                    if worker.max_pixels < payload.params.height * payload.params.width:
+                        continue
+                if (payload.params.loras is not None) or (payload.params.tis is not None):
+                    if not worker.lora:
+                        continue
+            if payload.source_image is not None:
+                if not worker.img2img:
+                    continue
+                if (payload.source_processing is not None) and (not payload.source_processing == "img2img"):
+                    if not worker.painting:
+                        continue
+            workers.append(worker.id)
+        
+        # workers = ["dc0704ab-5b42-4c65-8471-561be16ad696"]
+        
+        if workers == []:
+            raise errors.AvailableWorkersNotFound()
+        payload.workers = workers
+
         if not isinstance(payload, dict):
             payload = payload.to_dict()
 
         response = await self._request(
             self.api+'/generate/async', "POST", payload, {'apikey': self.api_key}
         )
-        return msgspec.json.decode(
-            (await response.content.read()),
-            type=models.RequestAsync
-        )
+        if response.status == 202:
+            return msgspec.json.decode(
+                (await response.content.read()),
+                type=models.GenerationQueued
+            )
+        elif response.status == 400:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.ValidationErrorDescription
+            )
+            raise errors.ValidationError(description.message + "\nErrors:\n" + str(description.errors))
+        elif response.status == 403:
+            description = await response.content.read()
+            raise errors.Forbidden(description)
+        elif response.status == 401:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.InvalidAPIKeyDescription
+            )
+            raise errors.InvalidAPIKey(description.message)
+        elif response.status == 429:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.TooManyPromptsDescription
+            )
+            raise errors.TooManyPrompts(description.message)
+        elif response.status == 503:
+            description = msgspec.json.decode(
+                (await response.content.read()),
+                type=models.MaintenanceModeDescription
+            )
+            raise errors.MaintenanceMode(description.message)
+        else:
+            raise ValueError("Invalid status code: " + str(response.status))
+
+    async def convert_image(self, jpg_path):
+        jpg_image = Image.open(jpg_path)
+        webp_image = jpg_image.convert("RGBA")
+        webp_bytes = BytesIO()
+        webp_image.save(webp_bytes, "WEBP", lossless=True)
+        jpg_image.close()
+        webp_base64 = base64.b64encode(webp_bytes.getvalue())
+        return webp_base64.decode()
 
     async def generate_from_txt(
         self,
@@ -64,11 +189,11 @@ class StableHordeAPI:
         image_gen = await self.txt2img_request(payload)
         finished = False
         while not finished:
-            # Check if image is generated every second
-            await asyncio.sleep(1)
             img_check = await self.generate_check(image_gen.id)
             if img_check.done == 1:
                 finished = True
+            else:
+                await asyncio.sleep(img_check.wait_time)
 
         # Request a status of the generation with images
         img_status = await self.generate_status(image_gen.id)

@@ -22,8 +22,10 @@ from stablehorde_api import StableHordeAPI
 
 async def main():
     client = StableHordeAPI("Your Stable Horde token here")
+    prompt = "Futuristic cyberpunk landscape, 8k, hyper realistic, cinematic"
+    negative_prompt = "lowres, bad quality, low quality, text, username, error"
     await client.generate_from_txt(
-        "Futuristic cyberpunk landscape, 8k, hyper realistic, cinematic"
+        prompt + " ### " + negative_prompt
     )
 
 asyncio.run(main())
@@ -111,7 +113,24 @@ async def main():
         async with aiofiles.open(new_filename, 'wb') as file:
             b64_bytes = generation.img.encode('utf-8')
             img_bytes = base64.b64decode(b64_bytes)
-            awat file.write(img_bytes)
+            await file.write(img_bytes)
+```
+You can use LoRA's from CivitAI, by setting `loras`:
+```
+from stablehorde_api import ModelPayloadLorasStable, ModelGenerationInputStable
+
+lora = '14479' # Model Version ID
+strength = 0.9 # Model Strength
+clip = 1 # CLIP Strength, not necessary
+trigger = "Hu Tao" # Trigger tag, not necessary
+
+loras = [ModelPayloadLorasStable(lora, model=strength, clip=clip_strength, inject_trigger=trigger)]
+params = ModelGenerationInputStable(loras=loras)
+
+prompt = ""masterpiece, best quality, ((Hu Tao)), brown hair, long hair, flower-shaped pupils"
+model = 'Anything Diffusion'
+payload = GenerationInput(prompt, models=[model], params=params)
+...
 ```
 If you set `r2` to true, then you will need to request content from the link in generations. You can do that by using aiohttp:
 ```python
