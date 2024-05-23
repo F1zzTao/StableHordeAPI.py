@@ -3,6 +3,8 @@ StableHordeAPI.py
 </h1>
 <h2 align="center">Simple wrapper around Stable Horde API</h2>
 
+# :warning: StableHordeAPI.py is obsolete. Consider using [horde-sdk by Haidra-Org](https://github.com/Haidra-Org/horde-sdk) instead :warning:
+
 # Content
 - [Installation](#installation)
 - [Usage](#usage)
