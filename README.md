@@ -1,9 +1,9 @@
+## Discontinued, use [pyAIHorde](https://github.com/lapismyt/pyAIHorde) instead :warning:
+
 <h1 align="center">
 StableHordeAPI.py
 </h1>
 <h2 align="center">Simple wrapper around Stable Horde API</h2>
-
-## Discontinued, use [pyAIHorde](https://github.com/lapismyt/pyAIHorde) instead :warning:
 
 # Content
 - [Installation](#installation)
