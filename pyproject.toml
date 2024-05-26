@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "StableHordeAPI.py"
-version = "0.1.0"
+version = "0.1.9"
 description = "Library for using Stable Horde API in Python"
-authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>"]
+authors = ["Timur Bogdanov <timurbogdanov2008@gmail.com>", "Nikita Ugnich <nikitagavrilin005@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/timius100/StableHordeAPI.py"
@@ -24,10 +24,11 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-aiofiles = "^22.1.0"
+aiofiles = "^23.1.0"
 aiohttp = "^3.8.3"
 msgspec = "^0.10.1"
 loguru = "^0.6.0"
+pillow = ">=10.0.0"
 
 
 [build-system]
